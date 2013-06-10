@@ -1,0 +1,18 @@
+Package: R1magic
+Type: Package
+Title: Compressive Sampling: Sparse signal recovery utilities
+Version: 0.1
+Date: 2011-06-12
+Author: Mehmet Suzen
+Maintainer: Mehmet Suzen <mehmet.suzen@physics.org>
+Depends: stats
+Description: Provides miminization routines and related utilities for
+        compressive sampling. l-1, l-2 and TV (1-D) minimization, DFT
+        basis matrix, sparse signal generator and examples.
+License: GPL (>= 3)
+LazyLoad: yes
+Packaged: 2011-06-12 21:56:44 UTC; msuzen
+Repository: CRAN
+Date/Publication: 2011-06-15 17:50:25
+Namespace: auto
+Built: R 2.14.0; ; 2011-11-01 21:18:32 UTC; unix

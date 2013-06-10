@@ -1,0 +1,19 @@
+CompareL1_L2_TV1        Compare L1, L2 and TV on a sparse signal.
+DFTMatrix0              Generate Discrete Fourier Transform Matrix
+                        using DFTMatrixPlain.
+DFTMatrixPlain          Generate Plain Discrete Fourier Transform
+                        Matrix without the coefficient
+GaussianMatrix          Generate Gaussian Random Matrix
+R1magic-package         Compressive Sampling: Sparse signal recovery
+                        utilities
+TV1                     1-D total variation of a vector.
+objective1TV            1-D Total Variation Penalized Objective
+                        Function
+objectiveL1             L-1 Penalized Objective Function
+objectiveL2             L-2 Penalized Objective Function
+oo                      Frequency expression for DFT
+solve1TV                1-D Total Variation Penalized Nonlinear
+                        Minimization
+solveL1                 l1 Penalized Nonlinear Minimization
+solveL2                 l2 Penalized Nonlinear Minimization
+sparseSignal            Sparse digital signal Generator.
