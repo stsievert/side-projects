@@ -8,7 +8,7 @@ When I was doing math homework, I had my graphing calculator out, but I was sole
 My goal here calculate [any number to the power of another number (e.g., 3<sup>3.5</sup>)][power], using only addition and multiplication (and the inverse operations). Though I'm certain there's faster, better algorithms out there, my solution was within [0.001% after 10 iterations.][power-result] My solution required that I also write functions for natural logs.
 
 ### Project Euler
-On Project Euler, you solve math problems with programming languages. The first problems are simple (1: what's the sum of every number below 1,000 divisible by 3 or 5?) to really complex (155: given 18 capacitors, how many possible capacitances can you have?). Total, I have solved 46 problems.
+On Project Euler, you solve math problems with programming languages. The first problems are simple (1: what's the sum of every number below 1,000 divisible by 3 or 5?) to really complex (155: given 18 capacitors, how many possible capacitances can you have?). Total, I have [solved][euler-sol] 46 problems.
 
 [innocentive]:https://www.innocentive.com
 [r1magic]:https://github.com/msuzen/R1magic/wiki
@@ -20,3 +20,4 @@ On Project Euler, you solve math problems with programming languages. The first 
 [1]:http://projecteuler.net/problem=1
 [155]:http://projecteuler.net/problem=155
 [rpi]:https://github.com/scottsievert/RPi
+[euler-sol]:https://github.com/scottsievert/side-projects/blob/master/euler.py
