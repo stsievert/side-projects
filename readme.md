@@ -10,6 +10,10 @@ My goal here calculate [any number to the power of another number (e.g., 3<sup>3
 ### Project Euler
 On Project Euler, you solve math problems with programming languages. The first problems are simple (1: what's the sum of every number below 1,000 divisible by 3 or 5?) to really complex (155: given 18 capacitors, how many possible capacitances can you have?). Total, I have [solved][euler-sol] 46 problems.
 
+### MATLAB vs Python
+You can best view the notebook at [nbviewer.ipython.org][nb]. This project does
+speed tests between Matlab and Python, using Numpy and Numba v0.12.
+
 [innocentive]:https://www.innocentive.com
 [r1magic]:https://github.com/msuzen/R1magic/wiki
 [result]:https://github.com/scottsievert/side-projects/blob/master/InnoCentive_cancer_problem/correct!.png
@@ -18,6 +22,7 @@ On Project Euler, you solve math problems with programming languages. The first 
 [power-result]:https://github.com/scottsievert/side-projects/blob/master/Calculating_loqs/MATLAB_functions/S2pow3\%5E3.5.png
 [euler]:http://projecteuler.net/about
 [1]:http://projecteuler.net/problem=1
+[nb]:http://nbviewer.ipython.org/urls/raw.github.com/scottsievert/side-projects/master/matlab_vs_python/Python%2520vs%2520Numba%2520vs%2520Matlab%2520vs%2520C.ipynb
 [155]:http://projecteuler.net/problem=155
 [rpi]:https://github.com/scottsievert/RPi
 [euler-sol]:https://github.com/scottsievert/side-projects/blob/master/euler.py
