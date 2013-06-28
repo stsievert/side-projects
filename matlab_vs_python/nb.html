@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--NEW RELIC Start Perf Measurement-->
+    <script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script>
+    <!--NREND-->
+
+    <!-- Le styles -->
+    <!--<link href="/static/css/bootstrap.css" rel="stylesheet">-->
+    <link href="/static/css/docs.css" rel="stylesheet">
+    <link href="/static/js/google-code-prettify/prettify.css" rel="stylesheet">
+    <link href="/static/style.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/static/ico/ipynb_icon_16x16.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
+    
+    <style type="text/css" media='screen and (min-width:980px)'>
+    .navbar-inner {
+        opacity: 0.5;
+        transition: opacity 0.5s ease-in-out;
+        -webkit-transition: opacity 0.5s ease-in-out;
+    }
+
+    .navbar-inner ul{
+        opacity: 0.5;
+        transition: opacity 0.5s ease-in-out;
+        -webkit-transition: opacity 0.5s ease-in-out;
+    }
+
+    body{
+        padding-top:50px;
+    }
+
+    </style>
+    <style type="text/css" >
+    .imgwrap {
+        text-align: center;
+    }
+    .input_area{
+        padding: 0.4em;
+    }
+    div.input_area > div.highlight > pre {
+        margin: 0px;
+    }
+
+    .navbar-inner:hover {
+        opacity: 1.0;
+    }
+
+    .navbar-inner:hover ul{
+        opacity: 1.0;
+    }
+
+    </style>
+    
+    
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    
+    <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"type="text/javascript">
+    </script>
+    <script type="text/javascript">
+    init_mathjax = function() {
+        if (window.MathJax) {
+            // MathJax loaded
+            MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                    displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+                },
+                displayAlign: 'left', // Change this to 'center' to center equations.
+                "HTML-CSS": {
+                    styles: {'.MathJax_Display': {"margin": 0}}
+                }
+            });
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        }
+    }
+    init_mathjax();
+    </script>
+    
+  </head>
+
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+
+  <!-- Navbar
+  ================================================== -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <a href="/faq">FAQ</a>
+              </li>
+              <li class="">
+                <a href="http://www.ipython.org">IPython</a>
+              </li>
+              <li>
+              <a href="http://penandpants.com/2012/10/16/open-in-nbviewer-bookmarklet/">Bookmarklet</a>
+              </li>
+              
+
+            </ul>
+              
+    <ul class="nav pull-right"> 
+        <li class="">
+            <a href="https://raw.github.com/scottsievert/side-projects/master/matlab_vs_python/Python%20vs%20Numba%20vs%20Matlab%20vs%20C.ipynb" download="Python vs Numba vs Matlab vs C.ipynb">Download Notebook</a>
+        </li>
+    </ul>
+    
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+
+
+    
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1>Python, NumPy, Numba, Matlab and C</h1>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In my field, signal processing, Matlab is heavily used. I see Python as becoming a valid competitor, eventually. However, one of the advantages of Matlab is that it has a just-in-time compiler (JIT), making it much faster. Here, I test to see <em>how</em> much faster. I use Python's JIT, Numba, as well, and also include a C file to compare against.</p>
+<p>Any file compared is viewable at <a href="https://github.com/scottsievert/side-projects/tree/master/matlab_vs_python">my GitHub</a>. It's over 800 lines of code, the reason it's not in this notebook. As for overhead, I've tested the notebook GUI out, and there's no added overhead.</p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Python</h3>
+<p>Here, we're going to define a several functions (discrete wavelet operations, inverse and forward), then test the iterative soft thresholding (IST). You can see all the declarations in the GitHub repo.</p>
+<p>This pure python module uses for-loops as well as Numpy, but Numpy is famously bad at for-loops.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">ISTpython</span> <span class="kn">as</span> <span class="nn">ISTp</span>
+<span class="o">%</span><span class="k">timeit</span> <span class="n">ISTp</span><span class="o">.</span><span class="n">IST</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>1 loops, best of 3: 201 s per loop
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>NumPy</h3>
+<p>The only change we make is that we vectorize our for-loops in our two fundamental functions (done thanks to a <a href="http://www.reddit.com/r/IPython/comments/1h7ztw/numpy_numba_matlab_and_c/carw4ug">Reddit comment</a>. Instead of </p>
+<pre><code>for i in arange(16):
+    y[i]   = x[2*i] + x[2*i+1]
+    y[i+l] = x[2*i] - x[2*i+1]
+</code></pre>
+<p>we have</p>
+<pre><code>i = arange(16)
+y[i]   = x[2*i] + x[2*i+1]
+y[i+l] = x[2*i] - x[2*i+1]
+</code></pre>
+<p>That's it, but we see huge speed improvements.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">IST</span> <span class="kn">as</span> <span class="nn">ISTnumpy</span>
+<span class="o">%</span><span class="k">timeit</span> <span class="n">ISTnumpy</span><span class="o">.</span><span class="n">IST</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>1 loops, best of 3: 12.9 s per loop
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Numba Wrapper</h3>
+<p>Compiling this function in Numba was a pain. I ran into weird bugs where was testing a function, or running it multiple times, I would get an error. If I quit the interpetter and restarted, it was fine and I got no bugs. I also had to adjust anything or unusual (tuple assignment didn't work, <code>dtype</code> assignment didn't work, etc). The functions in <code>ISTnumba</code> are those adjusted functions with an <code>@autojit</code> decerator.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">ISTnumba</span>
+<span class="o">%</span><span class="k">timeit</span> <span class="n">ISTnumba</span><span class="o">.</span><span class="n">IST</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>1 loops, best of 3: 10 s per loop
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>MATLAB</h3>
+<p>This will be run in the actual Matlab environment, but I'll include the results in here. I have installed the MATLAB command line tools, but <code>matlab -nodisplay -r "run IST.m"</code> starts the interpreter, so I can't use <code>time</code>.</p>
+</div>
+Elapsed time is 7.170071 seconds.
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>C</h3>
+<p>And the C versions, with the optimization flags.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="o">!</span>gcc IST.c -o IST.o 
+<span class="o">!</span><span class="nb">time</span> ./IST.o
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+real	0m1.087s
+user	0m1.019s
+sys	0m0.056s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="o">!</span>gcc -O3 IST.c -o IST_O3.o
+<span class="o">!</span><span class="nb">time</span> ./IST_O3.o
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+real	0m0.522s
+user	0m0.462s
+sys	0m0.053s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>Graphing</h3>
+<p>Of course, we have plots.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">python</span> <span class="o">=</span> <span class="mi">201</span>
+<span class="n">numpy</span>  <span class="o">=</span> <span class="mf">12.9</span>
+<span class="n">matlab</span> <span class="o">=</span> <span class="mf">7.17</span>
+<span class="n">numba</span>  <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">c</span>      <span class="o">=</span> <span class="mf">1.087</span>
+<span class="n">c_O3</span>   <span class="o">=</span> <span class="mf">0.522</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;python&#39;</span><span class="p">,</span>  <span class="s">&#39;numpy&#39;</span><span class="p">,</span> <span class="s">&#39;numba&#39;</span><span class="p">,</span> <span class="s">&#39;matlab&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;c -03&#39;</span><span class="p">]</span>
+<span class="n">timings</span> <span class="o">=</span> <span class="p">[</span><span class="n">python</span><span class="p">,</span>    <span class="n">numpy</span><span class="p">,</span>   <span class="n">numba</span><span class="p">,</span>   <span class="n">matlab</span><span class="p">,</span>  <span class="n">c</span><span class="p">,</span>    <span class="n">c_O3</span><span class="p">]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">timings</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">1E-6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">3E-1</span><span class="p">,</span> <span class="mf">3E2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">FuncFormatter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">labels</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Iterative Soft Thresholding&quot;</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_display_data">
+
+<img src="data:image/png;base64,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
+aDbLrqe/KLzeM2U+uXk9n0h9b6uJlI1Fn4hogbDoj/F6z5T55Ob1fOzpO4NFn4hogbDoj/F6z5T5
+5Ob1fCL1va0mUjYpir5TSzaJiGTGJZv35PWeKfPJzev5ROp7W82pbFyySUREE1j0x3i9Z8p8cvN6
+Pi+3cEXKxqJPRLRAWPTHeL1nynxy83o+9vSdwaJPRLRAWPTHeL1nynxy83o+kfreVhMpG4s+EdEC
+kaLo83r61mA+uXk9n0h9b6vxevr3xOvpExHNxn/Ouiev90yZT25ezydS39tqImVj0SciWiAs+mO8
+3jNlPrl5PR97+s5g0SciWiAs+mO83jNlPrl5PZ9IfW+riZSNRZ+IaIGw6I/xes+U+eTm9Xwi9b2t
+JlI2Fn0iogXCoj/G6z1T5pOb1/OJ1Pe2mkjZWPSJiBYIi/4Yr/dMmU9uXs8nUt/baiJlk6LoO3XB
+NSIimc1zwTVpir4Tz5Re75kyn9y8ns/LEzunssXjcW8UfSIisgaL/hiv90yZT25ezydS39tqImVj
+0SciWiAs+mO83jNlPrl5PR97+s5g0SciWiAs+mO83jNlPrl5PZ9IfW+riZSNRZ+IaIGw6I/xes+U
++eTm9Xwi9b2tJlI2Fn0iogXCoj/G6z1T5pOb1/OJ1Pe2mkjZWPSJiBYIi/4Yr/dMmU9uXs8nUt/b
+aiJlY9EnIlogLPpjvN4zZT65eT2fSH1vq4mUjUWfiGiBuFr0h8MhWq0W6vU6hsOhm0MB4P2eKfPJ
+zev5ROp7W02kbLYW/UKhMLFdr9fRarVwcnICADg8PEQikcDW1haq1aqdQyEiIthY9KvVKur1urmt
+qioAIJFIAAC63S50XQcA+P1+XFxc2DWUuXm9Z8p8cvN6PpH63lYTKdvv7Drw7u4uarWauX16eopU
+KgUACIfDUBQFwWAQw+EQhmEgEonYNRQistnPP/8Tnz795uoYvvnm9/jhhz+7OgYZ2Fb0r9N1HaFQ
+yNz+/PkzcrkcFEUB8OVJwm0fP7Y9PZtiPrmJnO/Tp9/w7bcP+xt+aL6rK3FbxO12W5jZvmNFHwAM
+w5jYXl1dxerqqpNDICJaaI4V/UAggH6/DwAYDAZYXl6e+7bPnz/HysqKeZz19XXzWXN0Vny0PVrh
+MJox3Gf7yZP4g24PAFdXHyee1a+P72u3R5iP+Zjv7m2r8si2Pfr88vISs/iM69NvC6VSKTQaDQBf
+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
+"></img>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And zooming closer in on the range we're interested in, and doing those comparisions...</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">labels</span>  <span class="o">=</span> <span class="p">[</span><span class="s">&#39;numpy&#39;</span><span class="p">,</span> <span class="s">&#39;numba&#39;</span><span class="p">,</span> <span class="s">&#39;matlab&#39;</span><span class="p">]</span>
+<span class="n">timings</span> <span class="o">=</span> <span class="p">[</span> <span class="n">numpy</span><span class="p">,</span>   <span class="n">numba</span><span class="p">,</span>   <span class="n">matlab</span><span class="p">]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="n">x</span><span class="p">)</span><span class="c">#, yscale=&#39;log&#39;)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">timings</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">1E-6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">FuncFormatter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">labels</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;time (s)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Iterative Soft Thresholding&quot;</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_display_data">
+
+<img src="data:image/png;base64,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
+"></img>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;C comparisions:&quot;</span>
+<span class="k">print</span> <span class="s">&quot;NumPy / C  :&quot;</span><span class="p">,</span> <span class="n">numpy</span>  <span class="o">/</span> <span class="n">c</span>
+<span class="k">print</span> <span class="s">&quot;Numba / C  :&quot;</span><span class="p">,</span> <span class="n">numba</span>  <span class="o">/</span> <span class="n">c</span>
+<span class="k">print</span> <span class="s">&quot;Matlab / C :&quot;</span><span class="p">,</span> <span class="n">matlab</span> <span class="o">/</span> <span class="n">c</span>
+
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">The comparision that we care about, Numba and Numpy divided by Matlab:&quot;</span>
+<span class="k">print</span> <span class="s">&quot;Numba / Matlab: &quot;</span><span class="p">,</span> <span class="n">numba</span> <span class="o">/</span> <span class="n">matlab</span>
+<span class="k">print</span> <span class="s">&quot;NumPy / Matlab: &quot;</span> <span class="p">,</span> <span class="n">numpy</span> <span class="o">/</span> <span class="n">matlab</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output vbox">
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>C comparisions:
+NumPy / C  : 11.867525299
+Numba / C  : 9.19963201472
+Matlab / C : 6.59613615455
+
+The comparision that we care about, Numba and Numpy divided by Matlab:
+Numba / Matlab:  1.39470013947
+NumPy / Matlab:  1.79916317992
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice the log scale on the first plot. 1 tick is a <strong>huge</strong> difference.</p>
+<p>Numba is a recent development: it's only in 0.9 and was released only a year or so ago. Matlab on the other hand has had a JIT compiler for 8 years, <a href="http://www.ee.columbia.edu/~marios/matlab/accel_matlab.pdf">since 2002</a> (since <a href="https://en.wikipedia.org/wiki/MATLAB#Release_history">Matlab 6.5</a>). My sense is that Matlab will go the way of <a href="https://en.wikipedia.org/wiki/IDL_(programming_language)">IDL</a>, while Python, I think, will become the new standard. In machine learning, that's becoming the case, although Matlab still plays a role. NumPy, without Numba, is already a valid competitor to Matlab: the speeds are close to the same. As Numba gets more mature and more stable, Python will become more of a competitor to Matlab.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+
+     <!-- Footer
+     ================================================== -->
+      <footer class="footer">
+      <p class="pull-right"><a href="#">Back to top</a></p>
+      <p>More info on <a href='http://ipython.org'> IPython website </a>.
+      <a href="https://github.com/ipython/nbviewer">The code for this site</a> is licensed under  <a href="https://github.com/ipython/nbviewer/blob/master/LICENSE.txt" target="_blank">BSD</a>.
+      Some icons from <a href="http://glyphicons.com">Glyphicons Free</a>, built thanks to <a href="http://twitter.github.com/bootstrap/"> Twitter Bootstrap</a></p>
+      <p>This web site does not host notebooks, it only renders notebooks available on other websites.
+      Thanks to all our <a href="https://github.com/ipython/nbviewer/contributors">contributors</a>.</p>
+      </footer>
+    </div><!-- /container -->
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!--<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>-->
+    <script src="/static/js/jquery.js"></script>
+    <!--<script src="/static/js/google-code-prettify/prettify.js"></script>-->
+    <!--<script src="/static/js/bootstrap-transition.js"></script>-->
+    <!--<script src="/static/js/bootstrap-alert.js"></script>-->
+    <!--<script src="/static/js/bootstrap-modal.js"></script>-->
+    <!--<script src="/static/js/bootstrap-dropdown.js"></script>-->
+    <!--<script src="/static/js/bootstrap-scrollspy.js"></script>-->
+    <!--<script src="/static/js/bootstrap-tab.js"></script>-->
+    <!--<script src="/static/js/bootstrap-tooltip.js"></script>-->
+    <!--<script src="/static/js/bootstrap-popover.js"></script>-->
+    <!--<script src="/static/js/bootstrap-button.js"></script>-->
+    <script src="/static/js/bootstrap-collapse.js"></script>
+    <!--<script src="/static/js/bootstrap-carousel.js"></script>-->
+    <!--<script src="/static/js/bootstrap-typeahead.js"></script>-->
+    <!--<script src="/static/js/application.js"></script>-->
+
+
+    <!-- Analytics
+    ================================================== -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-38683231-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    <!--NEW RELIC Stop Perf Measurement-->
+    <script type="text/javascript">if(!NREUMQ.f){NREUMQ.f=function(){NREUMQ.push(["load",new Date().getTime()]);var e=document.createElement("script");e.type="text/javascript";e.src=(("http:"===document.location.protocol)?"http:":"https:")+"//"+"rpm-images.newrelic.com/42/eum/rum.js";document.body.appendChild(e);if(NREUMQ.a)NREUMQ.a();};NREUMQ.a=window.onload;window.onload=NREUMQ.f;};NREUMQ.push(["nrfj","beacon-3.newrelic.com","7c83165904","1528310","Y1YAMUFQXEZYUEcIVlocJBBdUkZcVl0cBlBHR1gXVl9WUEtsRhNVRw==",7,448,new Date().getTime(),"","","","",""]);</script>
+    <!--NEW RELIC End-->
+  </body>
+</html>
