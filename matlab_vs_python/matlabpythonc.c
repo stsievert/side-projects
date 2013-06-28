@@ -58,7 +58,7 @@ void IST(){
 
     float tn = 1;
     float tn1;
-    int its = 1000;
+    int its = 100;
     int k;
     float cut = 6.0;
 

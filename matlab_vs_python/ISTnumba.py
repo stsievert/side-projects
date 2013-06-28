@@ -1,13 +1,15 @@
 from pylab import *
 import pywt
 import random
+from numbapro import autojit, jit
 
 # THIS CODE WORKS. DON"T CHANGE ANY OF THE (I)DWT FUNCTIONS
 
+@autojit
 def dwt(x):
-    y = zeros(len(x))*1.0
     l = len(x)/2
-    for i in arange(len(x)/2):
+    y = zeros(l * 2)
+    for i in arange(l):
         y[i]     = x[2*i] + x[2*i+1]
         y[i + l] = x[2*i] - x[2*i+1]
     y = y / sqrt(2)
@@ -26,73 +28,76 @@ def dwt_full(x):
         y[0:w>>k+1], y[w>>k+1:w>>k] = ca, cd
     return y
 
+@autojit
 def dwt2(y):
     x = np.array(y).copy()
     x = x*1.0
-    w,l = x.shape
- #  pdb.set_trace()
+    w = len(x)
+    l = len(x[0])
     for i in range(w):
         x[i,:] = dwt(x[i,:])
     for i in range(l):
         x[:,i] = dwt(x[:,i])
     return np.round(x)
 
-
+@autojit
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the
     # "approx" image
-  # pdb.set_trace()
-    x = s*1.0
-    width  = len(x[0,:])
-    height = len(x[:,0])
+    x = s
+    width  = len(x)
+    #height = len(x[0])
     for k in range(0, order):
         # do it on each row and column
         y = x[0:width>>k, 0:width>>k]
         y = dwt2(y)
         x[0:width>>k, 0:width>>k] = y
-    del y
-    x = x*1.0
-    return np.round(x)
+    return x
+x = arange(16).reshape(4,4)
 
+@autojit
 def dwt2_full(x):
     order = int(log2(len(x)))
     return dwt2_order(x, order)
 
-
-
-
-
+@autojit
 def idwt(x):
     l = len(x)/2
-    y = zeros(len(x))
-    for i in arange(len(x)/2):
+    y = zeros(l * 2)
+    for i in arange(l):
         y[2*i]   = x[i] + x[i+l]
         y[2*i+1] = x[i] - x[i+l]
     y = y / sqrt(2)
     return y
 
+@autojit
 def idwt2(y):
     """ assumes x is 2D """
-    x = np.array(y)*1.0
-    w, l = x.shape
+    x = np.array(y)
+    w = len(x)
+    l = len(x[0])
     for i in range(w):
         x[:,i] = idwt(x[:,i])
     for i in range(l):
         x[i,:] = idwt(x[i,:])
     return np.round(x)
 
+@autojit
 def idwt2_order(x, order):
     """ assumes x is 2D"""
-    x = np.asarray(x)
-    x = 1.0*x
-    w, l = x.shape
-    w, l = int(w), int(l)
+    #x = np.asarray(x)
+    #x = 1.0*x
+    #w, l = x.shape
+    #w, l = int(w), int(l)
+    w = len(x[0])
+    l = len(x)
     for i in range(order, 0, -1):
         y = x[0:w>>i-1, 0:l>>i-1]
         y = idwt2(y)
         x[0:w>>i-1, 0:l>>i-1] = y
     return x
 
+@autojit
 def idwt2_full(x):
     order = int(log2(len(x)))
     return idwt2_order(x, order)
@@ -124,6 +129,7 @@ def IST():
     xold1 = zeros(sz);
     tn = 1;
     for i in arange(its):
+        #if i % 10 == 0: print i
         tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
         xold = xold + (tn-1)/tn1 * (xold - xold1)
         
@@ -149,10 +155,5 @@ def IST():
         tn = tn1
 
 
-    #subplot(211)
-    #imshow(ys, cmap='gray')
-    #subplot(212)
-    #imshow(idwt2_full(xold), cmap='gray')
-    #show()
         
 
