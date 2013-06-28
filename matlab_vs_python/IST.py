@@ -7,30 +7,16 @@ import random
 def dwt(x):
     y = zeros(len(x))*1.0
     l = len(x)/2
-    for i in arange(len(x)/2):
-        y[i]     = x[2*i] + x[2*i+1]
-        y[i + l] = x[2*i] - x[2*i+1]
+    i = arange(l)
+    y[i] = x[2*i] + x[2*i + 1]
+    y[i+l] = x[2*i] - x[2*i + 1]
     y = y / sqrt(2)
     return y
 
-
-def dwt_full(x):
-    """ assumes x is 1d and 2^n"""
-    y = x.copy()
-    order = int(log(len(x), 2))
-    w = len(x)
-    t = array([])
-    for k in range(0, order):
-        t = y[0:w>>k]
-        ca, cd = pywt.dwt(t, 'haar')
-        y[0:w>>k+1], y[w>>k+1:w>>k] = ca, cd
-    return y
-
 def dwt2(y):
-    x = np.array(y).copy()
-    x = x*1.0
+    #y = arange(16, dtype=float).reshape(4,4)
+    x = y.copy()
     w,l = x.shape
- #  pdb.set_trace()
     for i in range(w):
         x[i,:] = dwt(x[i,:])
     for i in range(l):
@@ -41,7 +27,6 @@ def dwt2(y):
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the
     # "approx" image
-  # pdb.set_trace()
     x = s*1.0
     width  = len(x[0,:])
     height = len(x[:,0])
@@ -50,9 +35,7 @@ def dwt2_order(s, order):
         y = x[0:width>>k, 0:width>>k]
         y = dwt2(y)
         x[0:width>>k, 0:width>>k] = y
-    del y
-    x = x*1.0
-    return np.round(x)
+    return x
 
 def dwt2_full(x):
     order = int(log2(len(x)))
@@ -64,10 +47,10 @@ def dwt2_full(x):
 
 def idwt(x):
     l = len(x)/2
-    y = zeros(len(x))
-    for i in arange(len(x)/2):
-        y[2*i]   = x[i] + x[i+l]
-        y[2*i+1] = x[i] - x[i+l]
+    y = zeros_like(x)
+    i = arange(l)
+    y[2*i] = x[i] + x[i+l]
+    y[2*i+1] = x[i] - x[i+l]
     y = y / sqrt(2)
     return y
 

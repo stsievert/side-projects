@@ -65,7 +65,7 @@ void IST(){
     shuffle(rp, n);
     for (i=0; i<upper; i++){y[i] = x[rp[i]]; }
 
-    printf("Start\n"); fflush(stdout);
+    /*printf("Start\n"); fflush(stdout);*/
     for (k=0; k<its; k++){
         /*printf("its: %d\n", k);*/
         tn1 = (1+sqrt(1+4*tn*tn))/2;
