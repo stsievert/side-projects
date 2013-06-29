@@ -132,15 +132,16 @@ def IST():
         tn = tn1
 
 
-def ISTreal(I):
+def ISTreal(I, its=100, p=0.5):
     sz = I.shape
     n = sz[0] * sz[1]
-    p = 0.5
+    #p = 0.5
 
     rp = arange(n)
+    random.seed(42)
     random.shuffle(rp) # rp is random now
     upper = size(rp) * p
-    its = 100
+    #its = 100
     l = 6; 
     y = I.flat[rp[1:upper]] # the samples
 
@@ -176,18 +177,6 @@ def ISTreal(I):
         tn = tn1
     return xold, ys
 
-I = imread('/Users/scott/Desktop/not-used-frequently/pictures_for_project/len_std.jpg')
-I = mean(I, axis=2)
-xold, ys = ISTreal(I)
 
-subplot(211)
-imshow(ys, cmap='gray')
-axis('off')
-
-subplot(212)
-imshow(idwt2_full(xold), cmap='gray')
-axis('off')
-
-show()
         
 
