@@ -8,11 +8,6 @@ function []=IST()
     I = double(imread('~/Desktop/not-used-frequently/pictures_for_project/len_std.jpg'));
     I = mean(I, 3);
     I = imresize(I, [256, 256]);
-    %I = ones(256, 256);
-    %I = 255*I;
-    %I = 1:512*512;
-    %I = reshape(I, [512 512]);
-
 
     tic;
     sz = size(I);
@@ -30,24 +25,19 @@ function []=IST()
     l = 6; 
     % ? = maxi |(K T (y ? K x ? (?)))i |
     y = I(rp(1:upper)); % the samples
-    size(y)
-    size(I)
     ys = zeros(sz);
     ys(rp(1:upper)) = y;
-    %imagesc(ys); colormap gray
-    %drawnow
     
     xold = zeros(size(I));
     xold1 = zeros(sz);
     tn = 1;
-    %s = 5000;
     
     for i=1:its
         % pass the new x in
         %if i ~= 1 tn = tn1; end
-        if mod(i, 10) == 0
-            i = i
-        end
+        %if mod(i, 10) == 0
+            %i = i
+        %end
         tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
         
         
@@ -79,14 +69,14 @@ function []=IST()
         xold1 = xold; % delayed by one value
         xold = xold;  % to be extra clear
         tn = tn1;
-        
-
-        
     end
-    %semilogy(temp4)
+
+    sprintf('\n')
     toc;
-    imagesc(idwt2_full(xold)); colormap gray;
-    drawnow
+    %sprintf('\n')
+
+    %imagesc(idwt2_full(xold)); colormap gray;
+    %drawnow
     
 end
 
