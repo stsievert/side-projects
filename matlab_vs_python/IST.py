@@ -132,10 +132,62 @@ def IST():
         tn = tn1
 
 
-    #subplot(211)
-    #imshow(ys, cmap='gray')
-    #subplot(212)
-    #imshow(idwt2_full(xold), cmap='gray')
-    #show()
+def ISTreal(I):
+    sz = I.shape
+    n = sz[0] * sz[1]
+    p = 0.5
+
+    rp = arange(n)
+    random.shuffle(rp) # rp is random now
+    upper = size(rp) * p
+    its = 100
+    l = 6; 
+    y = I.flat[rp[1:upper]] # the samples
+
+    ys = zeros(sz);
+    ys.flat[rp[1:upper]] = y;
+
+    xold = zeros(sz);
+    xold1 = zeros(sz);
+    tn = 1;
+    for i in arange(its):
+        tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
+        xold = xold + (tn-1)/tn1 * (xold - xold1)
+        
+        t1 = idwt2_full(xold);
+        temp = t1.flat[rp[1:upper]];
+        temp2 = y - temp;
+
+        temp3 = zeros(sz);
+        temp3.flat[rp[1:upper]] = temp2;
+        temp3 = dwt2_full(temp3);
+
+        temp4 = xold + temp3;
+        xold = temp4;
+
+        j = abs(xold) < l
+        xold[j] = 0
+        j = abs(xold) > l
+        xold[j] = xold[j] - sign(xold[j])*l
+      
+        
+        xold1 = xold
+        xold = xold
+        tn = tn1
+    return xold, ys
+
+I = imread('/Users/scott/Desktop/not-used-frequently/pictures_for_project/len_std.jpg')
+I = mean(I, axis=2)
+xold, ys = ISTreal(I)
+
+subplot(211)
+imshow(ys, cmap='gray')
+axis('off')
+
+subplot(212)
+imshow(idwt2_full(xold), cmap='gray')
+axis('off')
+
+show()
         
 
