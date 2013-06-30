@@ -15,14 +15,13 @@ def dwt(x):
 
 def dwt2(y):
     #y = arange(16, dtype=float).reshape(4,4)
-    x = y.copy()
+    x = y.copy() * 1.0
     w,l = x.shape
     for i in range(w):
         x[i,:] = dwt(x[i,:])
     for i in range(l):
         x[:,i] = dwt(x[:,i])
     return np.round(x)
-
 
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the
@@ -40,10 +39,6 @@ def dwt2_order(s, order):
 def dwt2_full(x):
     order = int(log2(len(x)))
     return dwt2_order(x, order)
-
-
-
-
 
 def idwt(x):
     l = len(x)/2

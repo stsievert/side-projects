@@ -15,18 +15,6 @@ def dwt(x):
     y = y / sqrt(2)
     return y
 
-def dwt_full(x):
-    """ assumes x is 1d and 2^n"""
-    y = x.copy()
-    order = int(log(len(x), 2))
-    w = len(x)
-    t = array([])
-    for k in range(0, order):
-        t = y[0:w>>k]
-        ca, cd = pywt.dwt(t, 'haar')
-        y[0:w>>k+1], y[w>>k+1:w>>k] = ca, cd
-    return y
-
 @autojit
 def dwt2(y):
     x = np.array(y).copy()
