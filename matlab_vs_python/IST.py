@@ -1,3 +1,30 @@
+# Notes:
+#   the base functions are defined first, and should probably be in their own
+#   script. the base functions are i/dwt, i/dwt2, i/dwt2_full -- they're just
+#   functions to put the image in a sparse (wavelet) domain.
+
+#   I solely declared them early on to call them later, in IST and ISTreal.
+#   Here, I use IST to time in the notebook (in this same folder) and ISTreal
+#   as my callable function (you can change iterations/sampling rate/cut off
+#   value).
+
+# Some notes on notation and variable names, in ISTreal:
+#   cut:    this is the cut off value that is done for iterative soft
+#           thresholding. everything below this value is set to 0
+#   I:      Our original image/signal.
+#   rp:     Our random permuatation of indicies, to ensure random sampling. If we
+#           had [1,2,3,4], rp would be [3,1,2,4]
+#   tn1:    Stands for t_{n+1} (explained elsewhere, I'm sure)
+#   xold1:  Stands for xold_{n-1}
+#   ys:     Our sampled measurements
+#   y:      Our measurements
+#   p:      Our sampling rate
+
+# What IST actually does:
+#   The equation for IST is 
+
+
+
 from pylab import *
 import pywt
 import random
@@ -127,7 +154,7 @@ def IST():
         tn = tn1
 
 
-def ISTreal(I, its=100, p=0.5):
+def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
     sz = I.shape
     n = sz[0] * sz[1]
     #p = 0.5
@@ -137,7 +164,7 @@ def ISTreal(I, its=100, p=0.5):
     random.shuffle(rp) # rp is random now
     upper = size(rp) * p
     #its = 100
-    l = 6; 
+    #l = 6; 
     y = I.flat[rp[1:upper]] # the samples
 
     ys = zeros(sz);
@@ -146,6 +173,7 @@ def ISTreal(I, its=100, p=0.5):
     xold = zeros(sz);
     xold1 = zeros(sz);
     tn = 1;
+    if draw: ion()
     for i in arange(its):
         tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
         xold = xold + (tn-1)/tn1 * (xold - xold1)
@@ -161,17 +189,33 @@ def ISTreal(I, its=100, p=0.5):
         temp4 = xold + temp3;
         xold = temp4;
 
-        j = abs(xold) < l
+
+        j = abs(xold) < cut
         xold[j] = 0
-        j = abs(xold) > l
-        xold[j] = xold[j] - sign(xold[j])*l
+        j = abs(xold) > cut
+        xold[j] = xold[j] - sign(xold[j])*cut
       
         
         xold1 = xold
         xold = xold
         tn = tn1
+        
+        if draw:
+            imshow(idwt2_full(xold), cmap='gray')
+            axis('off')
+            title(str(i))
+            draw()
+
     return xold, ys
 
+I = imread('./lenna.jpg')
+I = mean(I, axis=2); 
+i = 10
+x, y = ISTreal(I, cut=i, its=100)
 
-        
-
+I = idwt2_full(x)
+figure()
+axis('off')
+imshow(I, cmap='gray')
+savefig('lenna-l=%d.png' % i)
+show()
