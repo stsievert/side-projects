@@ -32,7 +32,7 @@ import random
 # THIS CODE WORKS. DON"T CHANGE ANY OF THE (I)DWT FUNCTIONS
 
 def dwt(x):
-    y = zeros(len(x))*1.0
+    y = zeros_like(x)
     l = len(x)/2
     i = arange(l)
     y[i] = x[2*i] + x[2*i + 1]
@@ -40,15 +40,16 @@ def dwt(x):
     y = y / sqrt(2)
     return y
 
-def dwt2(y):
-    #y = arange(16, dtype=float).reshape(4,4)
-    x = y.copy() * 1.0
-    w,l = x.shape
-    for i in range(w):
-        x[i,:] = dwt(x[i,:])
-    for i in range(l):
-        x[:,i] = dwt(x[:,i])
-    return np.round(x)
+x = arange(64).reshape(8,8)
+def dwt2(x):
+    y = x.copy()
+    w = y.shape[0]
+    i = arange(w)
+    y = dwt(y[i])
+    y = rot90(y, 3)
+    y = dwt(y[i])
+    y = fliplr(y).T
+    return y
 
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the
@@ -76,15 +77,17 @@ def idwt(x):
     y = y / sqrt(2)
     return y
 
-def idwt2(y):
-    """ assumes x is 2D """
-    x = np.array(y)*1.0
-    w, l = x.shape
-    for i in range(w):
-        x[:,i] = idwt(x[:,i])
-    for i in range(l):
-        x[i,:] = idwt(x[i,:])
-    return np.round(x)
+
+def idwt2(x):
+    y = x.copy()
+    w = y.shape[0]
+    i = arange(w)
+    y = idwt(y[i])
+    y = rot90(y, 3)
+    y = idwt(y[i])
+    y = fliplr(y).T
+    y = np.round(y)
+    return y
 
 def idwt2_order(x, order):
     """ assumes x is 2D"""
@@ -208,14 +211,16 @@ def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
 
     return xold, ys
 
-I = imread('./lenna.jpg')
-I = mean(I, axis=2); 
-i = 10
-x, y = ISTreal(I, cut=i, its=100)
+#I = imread('./lenna.jpg')
+#I = mean(I, axis=2); 
+#i = 10
+#x = arange(16).reshape(4,4)
+#i = arange(x.shape[0])
+#x, y = ISTreal(I, cut=i, its=100)
 
-I = idwt2_full(x)
-figure()
-axis('off')
-imshow(I, cmap='gray')
-savefig('lenna-l=%d.png' % i)
-show()
+#I = idwt2_full(x)
+#figure()
+#axis('off')
+#imshow(I, cmap='gray')
+#savefig('lenna-l=%d.png' % i)
+#show()
