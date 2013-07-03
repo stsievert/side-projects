@@ -113,7 +113,6 @@ def idwt2_full(x):
 # we're done declaring the whole haar wavelet stack. the above declarations are
 # all correct
 
-
 def IST():
     w = 256;
     I = arange(w*w).reshape(w, w)
