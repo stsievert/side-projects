@@ -5,7 +5,7 @@ function []=IST()
     clear all
     close all
     clc
-    'hello?'
+
     I = double(imread('~/Desktop/not-used-frequently/pictures_for_project/len_std.jpg'));
     I = mean(I, 3);
     I = imresize(I, [256, 256]);
@@ -34,7 +34,6 @@ function []=IST()
     tn = 1;
     
     for i=1:its
-        i = i
         % pass the new x in
         %if i ~= 1 tn = tn1; end
         %if mod(i, 10) == 0
@@ -139,9 +138,25 @@ function [y]=idwt(x)
 
 end
 
-function [y]=idwt2(x)
-    %x = reshape(1:16, [4 4]) - 1;
-    %x = dwt2(x);
+function [y] = idwt2(x)
+    l = size(x);
+    sz = l;
+    for i=1:l(1)
+        row = 1:l(1);
+        x(:,i) = idwt(x(:,i));
+    end
+
+    for i=1:l(2)
+        row = l(2);
+        x(i,:) = idwt(x(i,:));
+    end
+    y = x;
+end
+
+
+function []=idwt2()
+    x = reshape(1:16, [4 4]) - 1;
+    x = dwt2(x);
     
     ds = mat2dataset(x);
     ds1 = datasetfun(@idwt, ds, 'UniformOutput', false);
@@ -151,7 +166,7 @@ function [y]=idwt2(x)
     ds = mat2dataset(B);
     ds1 = datasetfun(@idwt, ds, 'UniformOutput', false);
     B = cell2mat(ds1);
-    y = B.';
+    y = B.'
 
 end
 function [y] = dwt2_full(x)
