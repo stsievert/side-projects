@@ -117,8 +117,6 @@ function [y]=idwt(x)
     y(2*i-1) = (x(i) + x(i + w/2))/2;
     y(2*i)   = (x(i) - x(i + w/2))/2;
     y = y * sqrt(2);
-
-
 end
 
 

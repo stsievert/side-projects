@@ -40,7 +40,6 @@ def dwt(x):
     y = y / sqrt(2)
     return y
 
-x = arange(64).reshape(8,8)
 def dwt2(x):
     y = x.copy()
     w = y.shape[0]
@@ -50,6 +49,8 @@ def dwt2(x):
     y = dwt(y[i])
     y = fliplr(y).T
     return y
+
+x = arange(64).reshape(8,8)
 
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the

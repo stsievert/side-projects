@@ -215,12 +215,9 @@ def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
 
     return xold, ys
 
-#I = imread('./lenna.jpg')
-#I = mean(I, axis=2); 
-#i = 10
-#x = arange(16).reshape(4,4)
-#i = arange(x.shape[0])
-#x, y = ISTreal(I, cut=i, its=100)
+
+I = imread('./lenna.jpg')
+I = mean(I, axis=2); 
 
 #I = idwt2_full(x)
 #figure()
@@ -228,3 +225,15 @@ def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
 #imshow(I, cmap='gray')
 #savefig('lenna-l=%d.png' % i)
 #show()
+
+A = arange(16).reshape(4,4)
+B = zeros((4,4))
+
+
+
+print dot(A, B)
+
+
+
+
+
