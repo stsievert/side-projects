@@ -226,12 +226,6 @@ I = mean(I, axis=2);
 #savefig('lenna-l=%d.png' % i)
 #show()
 
-A = arange(16).reshape(4,4)
-B = zeros((4,4))
-
-
-
-print dot(A, B)
 
 
 
