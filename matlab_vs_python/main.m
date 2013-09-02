@@ -1,6 +1,18 @@
 
+function []=main()
+    x = reshape(1:16, [4 4]);
+    y = x
+    
+    i = 1:4;
+    i = 4*(i)-4+1 % the starting indicies
+    
+    j = (1:4)-1
+    i + j+1
 
-
+    
+    
+    
+end
 function []=IST()
     clear all
     close all
@@ -34,6 +46,7 @@ function []=IST()
     tn = 1;
     
     for i=1:its
+        i = i
         % pass the new x in
         %if i ~= 1 tn = tn1; end
         %if mod(i, 10) == 0
@@ -96,46 +109,44 @@ end
 
 function [y] = dwt(x)
 
-%     w = size(x);
-%     w = max(w);
-%     x = reshape(x, 1, w);
-    y = x;
-    w = max(size(y));
+    w = size(x);
+    w = max(w);
+    x = reshape(x, 1, w);
+    y = zeros([1 w]);
     
     i = 1:w/2;
-    y(i)       = (x(2*i-1) + x(2*i));
-    y(i + w/2) = (x(2*i-1) - x(2*i));
+    y(i)       = (x(2*i-1) + x(2*i))/sqrt(2);
+    y(i + w/2) = (x(2*i-1) - x(2*i))/sqrt(2);
     
-    y = y / sqrt(2);
-    
-end
-
-function [y]=dwt2(x)
-    %x = reshape(1:16, [4 4]) - 1;
-    
-    ds = mat2dataset(x);
-    ds1 = datasetfun(@dwt, ds, 'UniformOutput', false);
-    B = cell2mat(ds1);
-    B = B.';
-    
-    ds = mat2dataset(B);
-    ds1 = datasetfun(@dwt, ds, 'UniformOutput', false);
-    B = cell2mat(ds1);
-    y = B.';
-
-
 end
 
 function [y]=idwt(x)
-    y = x;
-    w = max(size(y));
+    w = size(x);
+    x = reshape(x, 1, max(w));
+    w = size(x);
+    y = zeros(w);
+    w = w(2);
     
     i = 1:w/2;
     y(2*i-1) = (x(i) + x(i + w/2))/2;
     y(2*i)   = (x(i) - x(i + w/2))/2;
     y = y * sqrt(2);
+end
 
 
+function [y] = dwt2(x)
+    % x is 2D
+    l = size(x);
+    y = ones(l);
+    for i=1:l(1)
+        %row = 1:l(1);
+        x(:,i) = dwt(x(:,i));
+    end
+    for i=1:l(2)
+        %column = 1:l(2);
+        x(i,:) = dwt(x(i,:));
+    end
+    y = x;
 end
 
 function [y] = idwt2(x)
@@ -151,23 +162,6 @@ function [y] = idwt2(x)
         x(i,:) = idwt(x(i,:));
     end
     y = x;
-end
-
-
-function []=idwt2()
-    x = reshape(1:16, [4 4]) - 1;
-    x = dwt2(x);
-    
-    ds = mat2dataset(x);
-    ds1 = datasetfun(@idwt, ds, 'UniformOutput', false);
-    B = cell2mat(ds1);
-    B = B.';
-    
-    ds = mat2dataset(B);
-    ds1 = datasetfun(@idwt, ds, 'UniformOutput', false);
-    B = cell2mat(ds1);
-    y = B.'
-
 end
 function [y] = dwt2_full(x)
     sz = size(x);
@@ -192,20 +186,3 @@ function [y] = idwt2_full(x)
     end
     %y = x;
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

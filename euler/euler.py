@@ -1,13 +1,14 @@
 from __future__ import division
+from __future__ import division
 import math
 
 from numba import autojit, jit
-import pudb as pdb
 import itertools
 import string
 import numpy as np
 from PIL import Image
 from pylab import *
+import time
 
 def factorial(n):
     if n==1:# or n==0:
@@ -374,18 +375,18 @@ def infinite_network_of_r(n):
     for i in range(n-1):
         r_end = p((r, r_end)) + r
     return r_end
-def plot():
-    import matplotlib.pyplot as plt
-    from matplotlib.pyplot import rc
-    rc('text', usetex=True)
-    min = 1; max = 10
-    x = np.array(range(min, max)) - 1
-    y = [infinite_network_of_r(n) for n in range(min, max)]
-    plt.plot(x, y)
-    plt.title('$\\textrm{Effective resistance of an infinite network}$')
-    plt.ylabel('$\\textrm{Effective resistance}$')
-    plt.xlabel('$\\textrm{Iterations}$')
-    plt.show()
+#def plot():
+    #import matplotlib.pyplot as plt
+    #from matplotlib.pyplot import rc
+    #rc('text', usetex=True)
+    #min = 1; max = 10
+    #x = np.array(range(min, max)) - 1
+    #y = [infinite_network_of_r(n) for n in range(min, max)]
+    #plt.plot(x, y)
+    #plt.title('$\\textrm{Effective resistance of an infinite network}$')
+    #plt.ylabel('$\\textrm{Effective resistance}$')
+    #plt.xlabel('$\\textrm{Iterations}$')
+    #plt.show()
 
 def p71():
     """
@@ -552,24 +553,6 @@ def capsInSeries(n):
             caps += capsInSeries(c)
         return caps
 
-def primes(n):
-    """ generates primes below n, by a sieve of erathonessasf"""
-    list = np.arange(0,n)
-    prime = np.zeros(n) + 1
-    # 1 for prime and 0 for not
-    for k in list:
-        if prime[1] == 0 or k == 0 or k == 1:
-            continue
-        mul = 2
-        while mul*k < n:
-            prime[mul*k] = 0
-            mul += 1
-
-    primes = []
-    for k in list:
-        if prime[k] == 1:
-            primes += [k]
-    return primes
 
 def p47():
     # not sure if really 47
@@ -735,49 +718,51 @@ def p71():
 
 
 
-# problem 65
-# first, approximate sqrt(2)
-# sq = 1
-# sq = 1 + 1/2
-# sq = 1 + 1/(2 + 1/2)
+def p65():
+    # NOT COMPLETE
+    # problem 65
+    # first, approximate sqrt(2)
+    # sq = 1
+    # sq = 1 + 1/2
+    # sq = 1 + 1/(2 + 1/2)
 
-# sq = 1 + 1/(2 + 1/(2 + 1/2))
-# sq = 1 + 1
+    # sq = 1 + 1/(2 + 1/(2 + 1/2))
+    # sq = 1 + 1
 
-# starting from the bottom    
-sq = 0
-for k in arange(1e1):
-    sq = 1/(sq + 2)
-    num = k*2
-    den = 1
-    print num, den, num/den
-print "---"
-sq += 1
+    # starting from the bottom    
+    sq = 0
+    for k in arange(1e1):
+        sq = 1/(sq + 2)
+        num = k*2
+        den = 1
+        print num, den, num/den
+    print "---"
+    sq += 1
 
 
-# now, sqrt(23) = [4; (1 3 1 8)]
-sq = 0
-for k in arange(10):
-    sq = 1/(sq + 1/3 + 1/8)
-sq += 4
+    # now, sqrt(23) = [4; (1 3 1 8)]
+    sq = 0
+    for k in arange(10):
+        sq = 1/(sq + 1/3 + 1/8)
+    sq += 4
 
-# now e
-# e = [2; 1,2,1, 1,4,1, 1,6,1 , ... , 1,2k,1, ...]
+    # now e
+    # e = [2; 1,2,1, 1,4,1, 1,6,1 , ... , 1,2k,1, ...]
 
-ee = 0
-for k in arange(10, 0, -1):
-    ee = 1/(ee + 1/(2*k + 1))
-    num = 2*k + 1
-    # now we have to simplify this into a fraction (easy with sage)
+    ee = 0
+    for k in arange(10, 0, -1):
+        ee = 1/(ee + 1/(2*k + 1))
+        num = 2*k + 1
+        # now we have to simplify this into a fraction (easy with sage)
 
-# ee = 2
-# ee = 2 + 1/(2+1)
-# ee = 2 + 1/(2+1 + 1/(4+1))
-# ee = 2 + 1/(2+1 + 1/(4+1 + 1/(6+1)))
-# ee = 2 + 1/(2+1 + 1/(4+1 + 1/(6+1 + 1/(8+1))))
+    # ee = 2
+    # ee = 2 + 1/(2+1)
+    # ee = 2 + 1/(2+1 + 1/(4+1))
+    # ee = 2 + 1/(2+1 + 1/(4+1 + 1/(6+1)))
+    # ee = 2 + 1/(2+1 + 1/(4+1 + 1/(6+1 + 1/(8+1))))
 
-print "ee =", ee
-ee += 0
+    print "ee =", ee
+    ee += 0
 
 def mul8642(n, start=0):
     answer = 1
@@ -787,11 +772,351 @@ def mul8642(n, start=0):
     return answer
 
 
+def primes(limit):
+    limit = int(limit)
+    def primes_mem(limit):
+        a = array(True)
+        a = a.repeat(limit)
+        mul = arange(2, limit)
+        k = arange(2, limit)
+        i = mul[:,newaxis] * k
+        j = i < limit
+        i = i[j]
+        n = arange(limit)
+        a[i] = False
+        return n[a][2:]
+
+    def primes_no_mem(limit):
+        a = array(True)
+        a = a.repeat(limit)
+        idx = -1
+        j = arange(limit)
+        for mul in arange(2, limit):
+            for k in arange(2, limit):
+                i = mul * k
+                if i < limit:
+                    idx = mul * k == j
+                    a[idx] = False
+        return j[a][2::]
+
+    if limit < 50e3:
+        return primes_mem(limit)
+    else:
+        return primes_no_mem(limit)
+
+def p46():
+    ar = arange(int(1e4))
+    pr = primes(int(1e4))
+    i = pr[:, newaxis] + 2*ar**2
+    j = sort(i[i % 2 == 1]) # sorting the odd enteries
+    # j is now the sorted odd indicies
+    j = unique(j)
+
+
+    # we have the answer. now we have to find it.
+    i = arange(1, len(j))
+
+    k = j[i] - j[i-1]
+
+    h = k != 2
+    print j[h]
+
+def p66():
+# find a minimal solution to x^2 - D*y^2 = 1
+    D = arange(1, 1e3+1)
+    y = arange(1, 1e4)
+    x = sqrt(1 + D[:,newaxis] * y**2)
+    y = tile(y, (x.shape[0], 1))
+    y = array(y, dtype=int)
+
+    # only accepting whole numbers
+    i = x%1 == 0
+    summ = zeros_like(x) + 1e66
+    x0 = zeros_like(x)
+    x0[i] = x[i]
+    summ[i] = x[i] * y[i]
+    #summ = array(summ, dtype=int)
+
+    ## sorting the minimal solutions
+    i = argmin(summ, axis=1)
+    # columns where the minimal solution is
+    k = arange(x.shape[0])
+    x = x0[k, i]
+    y = y[k, i]
+    x = array(x, dtype=float)
+    y = 1.00*array(y, dtype=float)
+    # it finds the minimal solutions correctly
+
+    d = arange(8, 17)
+    print x[d]
+    print y[d]
+    print D[d]
+
+    # what the index of the largest x?
+    n = argmax(x)
+    # find the D value associated with it
+    n = D[n]
+    print n
+
+    # finding the x that goes with the minimal solution
+    t = argsort(x)
+    t = t[::-1]
 
 
 
+    print D[t[t == 661]]
 
 
+
+from decimal import Decimal
+from pandas import read_csv
+def p99_1():
+    file = './base_exp.txt'
+    file = open(file)
+
+    base = []
+    exp = []
+    for line in file:
+        line = line.split(',')
+        base += [Decimal(float(line[0]))]
+        exp  += [Decimal(float(line[1]))]
+
+    base = asarray(base)
+    exp = asarray(exp)
+    res = base ** exp
+    i = argsort(res)
+    i = i[::-1]
+    print i[0:10]
+
+def p99_2():
+    base_exp = array(read_csv('./base_exp.txt'))
+    base = base_exp[:,0]
+    exp = base_exp[:,1]
+
+    i = argsort(exp * log(base))
+    i = i[::-1]
+
+    # since python zero based and read_csv skips the first line
+    return i[0]+1+1
+
+def p87():
+    n = 50e6
+    cutX = n**0.5
+    cutY = n**0.33
+    cutZ = n**0.25
+    cutX += 100;
+    cutY += 100;
+    cutZ += 100;
+
+    add = zeros(1e8)
+    i = 0
+    sweep = primes(n**0.50 + 1e3)
+    print "Primes done"
+    for x in sweep:
+        for y in sweep:
+            for z in sweep:
+                add[i] = x**2 + y**3 + z**4
+                i += 1
+                if z > cutZ:
+                    break
+            if y > cutY:
+                break
+        if x > cutX:
+            break
+    print "Loop done"
+    add = array(add)
+    add = unique(add)[1:]
+    add = add[where(add < n)]
+    print add[0:10]
+    print len(add)
+
+def p87_fast():
+    N=5e7;
+    a=primes(N**(1/4));
+    b=primes(N**(1/3));
+    c=primes(N**(1/2));
+    A,B,C=meshgrid(a,b,c);
+    L=A**4+B**3+C**2;
+    S=len(unique(L[L<N]));
+    print S
+
+
+def p63():
+    N = 1e2
+    base = arange(N)+0
+    exp = arange(N)+0
+    B, E = meshgrid(base, exp)
+
+    P = B**E
+    digits = floor(np.log10(P))+1
+
+    ans = digits == E
+
+    i = ans == True
+    return len(ans[i])
+
+import numpy as np
+def sumOfDigits(n):
+    if type(n) == np.ndarray:
+        i = arange(int(math.log10(max(n))+1))
+        i = i[:,newaxis]
+        ans = n//(10**i) % 10
+        ans = sum(ans, axis=0)
+        return ans
+    else:
+        i = arange(int(math.log10(n)+1))
+        i = i[:,newaxis]
+        ans = n//(10**i) % 10
+        ans = sum(ans, axis=0)
+        return int(ans)
+
+
+
+def p93():
+    # take some sequence of numbers, and eval it with different op's
+    a = 1; b = 2; c = 3; d = 4
+    max_digits = 2
+    a = str(a)
+    b = str(b)
+    c = str(c)
+    d = str(d)
+
+    # *, /, +, - must be followed by a number or (, )
+    # insert a op, then a paren?
+
+    # '1+2+3+4'
+    # '1+2+3*4'
+    # '1+2*3/4'
+
+    # we will have exactly 3 paren pairs
+    # assuming n <= 99
+    def evalString(string):
+        try:
+            n = eval(string)
+        except:
+            return False
+        if n > 0 and floor(n) == n:
+            return eval(string)
+        else:
+            return False
+
+    # missing a+op+b+op+c
+    def getList(a, b, c, d):
+        a = str(a)
+        b = str(b)
+        c = str(c)
+        d = str(d)
+        lis = []
+        for aa in [a, b, c, d]:
+            for bb in [a, b, c, d]:
+                for cc in [a, b, c, d]:
+                    for dd in [a, b, c, d]:
+                        if aa == bb or aa == cc or aa == dd: continue
+                        if bb == cc or bb == dd: continue
+                        if cc == dd: continue
+                        for op1 in ['+', '-', '*', '/']:
+                            for op2 in ['+', '-', '*', '/']:
+                                for op3 in ['+', '-', '*', '/']:
+                                    final1 = '('+aa+')'+op1+'('+bb+op2+cc+op3+dd+')'
+                                    final2 = '('+aa+op1+bb+')'+op3+'('+cc+op2+dd+')'
+                                    final3 = '('+aa+op1+bb+op3+cc+')'+op2+dd
+                                    final4 = aa+op1+'('+bb+op2+cc+')'+op3+dd
+                                    #print final1, final2, final3
+                                    final1 = evalString(final1)
+                                    final2 = evalString(final2)
+                                    final3 = evalString(final3)
+                                    final4 = evalString(final4)
+
+                                    if final1: lis += [final1]
+                                    if final2: lis += [final2]
+                                    if final3: lis += [final3]
+                                    if final4: lis += [final4]
+        lis = asarray(lis)
+        lis = unique(lis)
+        lis = sort(lis)
+        
+        n = 0
+        past = 1
+        for i in lis:
+            if i != past + 1:
+                break
+            else:
+                n += 1
+            past = i
+
+
+
+        return n
+
+
+    a = arange(5)+1
+    b = a + 1
+    c = b + 1
+    d = c + 1
+
+    maxx = 0
+    for dd in d:
+        for cc in c:
+            for bb in c:
+                for aa in a:
+                    print aa, bb, cc, dd
+                    n = getList(aa, bb, cc, dd)
+                    
+
+                    if n > maxx:
+                        maxx = n
+                        stayn = str(aa)+str(bb)+str(cc)+str(dd)
+    print stayn
+
+def digits(n):
+    """ assumes np.array passed in """
+    digits = round(np.log10(max(n)+0))+0
+    z = zeros_like(n).repeat(digits)
+    z = z.reshape(len(n), digits)
+    for i in arange(digits ):
+        z[:,digits-1-i] = n//(10**i) % 10
+    return z
+
+from scipy.misc import factorial
+def p34():
+    n = arange(1e7)
+    z = digits(n)
+    dig= round(np.log10(max(n)+0))+0
+
+
+    # set leading 0's to -1, keeping past 0's (010 a problem)
+    i = arange(dig, dtype=int)
+    i = i.repeat(len(n)).reshape(dig, len(n))
+    i = rot90(i)
+    i = dig - i
+    digi = floor(np.log10(n))+1
+    digi = digi.repeat(dig).reshape(len(n), dig)#dig, len(n))
+
+    # j holds everywhere there's a leading 0
+    j = (i > digi)# & (z==0)
+    z[j] = -1
+
+    z = factorial(z)
+    z = sum(z, axis=1)
+    i = (z == n) & (z>3)
+    z = z[i]
+
+    return sum(z)
+
+
+#def p44():
+n = arange(8)+0
+p = n * (3*n - 1) / 2
+
+P1, P2 = meshgrid(p, p)
+su = P1 + P2
+diff = abs(P1 - P2)
+
+# finding where the sums and diffs are also pentagonal
+i = su == p[:, newaxis, newaxis]
+
+#j = zeros_like(i[:,:,0])
+#for ii in arange(i.shape[-1]): j = j | i[:,:,ii]
 
 
 

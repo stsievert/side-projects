@@ -23,15 +23,18 @@
 # What IST actually does:
 #   The equation for IST is 
 
-
-
 from pylab import *
+import numpy as np
 import pywt
 import random
-from numba.decorators import autojit
+from IPython.parallel import Client, parallel
+from threading import Thread
+from functools import wraps
+import os
+import time
+
 
 # THIS CODE WORKS. DON"T CHANGE ANY OF THE (I)DWT FUNCTIONS
-@autojit
 def dwt(x):
     y = zeros_like(x)
     l = len(x)/2
@@ -41,7 +44,6 @@ def dwt(x):
     y = y / sqrt(2)
     return y
 
-@autojit
 def dwt2(x):
     y = x.copy()
     w = y.shape[0]
@@ -52,13 +54,26 @@ def dwt2(x):
     y = fliplr(y).T
     return y
 
-@autojit
+# we have to do `ipcluster start` to get 4 engines running.
+#n = 8; order = int(log2(n))
+#s = arange(n*n).reshape(n,n)
+#x = s*1.0
+#width  = len(x[0,:])
+#height = len(x[:,0])
+#for k in range(0, order):
+    ## do it on each row and column
+    #y = x[0:width>>k, 0:width>>k]
+    #y = dwt2(y)
+    #x[0:width>>k, 0:width>>k] = y
+    ##return x
+#print np.round(x)
+
 def dwt2_order(s, order):
     # order means how many places width is shifted over: the bottom of the
     # "approx" image
     x = s*1.0
     width  = len(x[0,:])
-    #height = len(x[:,0])
+    height = len(x[:,0])
     for k in range(0, order):
         # do it on each row and column
         y = x[0:width>>k, 0:width>>k]
@@ -66,12 +81,10 @@ def dwt2_order(s, order):
         x[0:width>>k, 0:width>>k] = y
     return x
 
-@autojit
 def dwt2_full(x):
     order = int(log2(len(x)))
     return dwt2_order(x, order)
 
-@autojit
 def idwt(x):
     l = len(x)/2
     y = zeros_like(x)
@@ -81,7 +94,7 @@ def idwt(x):
     y = y / sqrt(2)
     return y
 
-@autojit
+
 def idwt2(x):
     y = x.copy()
     w = y.shape[0]
@@ -93,25 +106,25 @@ def idwt2(x):
     y = np.round(y)
     return y
 
-@autojit
 def idwt2_order(x, order):
     """ assumes x is 2D"""
     x = np.asarray(x)
     x = 1.0*x
-    w = x.shape[0]
+    w, l = x.shape
+    w, l = int(w), int(l)
     for i in range(order, 0, -1):
-        y = x[0:w>>i-1, 0:w>>i-1]
+        y = x[0:w>>i-1, 0:l>>i-1]
         y = idwt2(y)
-        x[0:w>>i-1, 0:w>>i-1] = y
+        x[0:w>>i-1, 0:l>>i-1] = y
     return x
 
-@autojit
 def idwt2_full(x):
     order = int(log2(len(x)))
     return idwt2_order(x, order)
 
 # we're done declaring the whole haar wavelet stack. the above declarations are
 # all correct
+
 
 def IST():
     w = 256;
@@ -151,8 +164,10 @@ def IST():
         xold = temp4;
 
         j = abs(xold) < l
+        #j = where(abs(xold) < l)
         xold[j] = 0
         j = abs(xold) > l
+        #j = where(abs(xold) > l)
         xold[j] = xold[j] - sign(xold[j])*l
       
         
@@ -160,64 +175,77 @@ def IST():
         xold = xold
         tn = tn1
 
-
-def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
-    sz = I.shape
-    n = sz[0] * sz[1]
-    #p = 0.5
-
-    rp = arange(n)
-    random.seed(42)
-    random.shuffle(rp) # rp is random now
-    upper = size(rp) * p
-    #its = 100
-    #l = 6; 
-    y = I.flat[rp[1:upper]] # the samples
-
-    ys = zeros(sz);
-    ys.flat[rp[1:upper]] = y;
-
-    xold = zeros(sz);
-    xold1 = zeros(sz);
-    tn = 1;
-    if draw: ion()
-    for i in arange(its):
-        tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
-        xold = xold + (tn-1)/tn1 * (xold - xold1)
-        
-        t1 = idwt2_full(xold);
-        temp = t1.flat[rp[1:upper]];
-        temp2 = y - temp;
-
-        temp3 = zeros(sz);
-        temp3.flat[rp[1:upper]] = temp2;
-        temp3 = dwt2_full(temp3);
-
-        temp4 = xold + temp3;
-        xold = temp4;
-
-
-        j = abs(xold) < cut
-        xold[j] = 0
-        j = abs(xold) > cut
-        xold[j] = xold[j] - sign(xold[j])*cut
-      
-        
-        xold1 = xold
-        xold = xold
-        tn = tn1
-        
-        if draw:
-            imshow(idwt2_full(xold), cmap='gray')
-            axis('off')
-            title(str(i))
-            draw()
-
-    return xold, ys
-
-
 I = imread('./lenna.jpg')
-I = mean(I, axis=2); 
+I = mean(I, axis=2)
+
+#def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
+start = time.time()
+its = 100
+p = 0.5
+cut = 6
+draw = False
+sz = I.shape
+n = sz[0] * sz[1]
+#p = 0.5
+
+rp = arange(n)
+random.seed(42)
+random.shuffle(rp) # rp is random now
+upper = size(rp) * p
+#its = 100
+#l = 6; 
+y = I.flat[rp[1:upper]] # the samples
+
+ys = zeros(sz);
+ys.flat[rp[1:upper]] = y;
+
+xold = zeros(sz);
+xold1 = zeros(sz);
+tn = 1;
+if draw: ion()
+for i in arange(its):
+    tn1 = (1 + sqrt(1 + 4*tn*tn))/2;
+    xold = xold + (tn-1)/tn1 * (xold - xold1)
+    
+    t1 = idwt2_full(xold);
+    temp = t1.flat[rp[1:upper]];
+    temp2 = y - temp;
+
+    temp3 = zeros(sz);
+    temp3.flat[rp[1:upper]] = temp2;
+    temp3 = dwt2_full(temp3);
+
+    temp4 = xold + temp3;
+    xold = temp4;
+
+
+    j = abs(xold) < cut
+    xold[j] = 0
+    j = abs(xold) > cut
+    xold[j] = xold[j] - sign(xold[j])*cut
+  
+    
+    xold1 = xold
+    xold = xold
+    tn = tn1
+    
+    if draw:
+        imshow(idwt2_full(xold), cmap='gray')
+        axis('off')
+        title(str(i))
+        draw()
+
+end = time.time()
+print end - start
+
+    #return xold, ys
+
+#I = imread('./lenna.jpg')
+#I = mean(I, axis=2); 
+#i = 10
+#x = arange(16).reshape(4,4)
+#i = arange(x.shape[0])
+#x, y = ISTreal(I, cut=i, its=100)
 
 #I = idwt2_full(x)
 #figure()
@@ -225,9 +253,3 @@ I = mean(I, axis=2);
 #imshow(I, cmap='gray')
 #savefig('lenna-l=%d.png' % i)
 #show()
-
-
-
-
-
-

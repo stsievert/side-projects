@@ -123,11 +123,11 @@ function [y] = dwt2(x)
     % x is 2D
     l = size(x);
     y = ones(l);
-    for i=1:l(1)
+    parfor i=1:l(1)
         %row = 1:l(1);
         x(:,i) = dwt(x(:,i));
     end
-    for i=1:l(2)
+    parfor i=1:l(2)
         %column = 1:l(2);
         x(i,:) = dwt(x(i,:));
     end
@@ -137,12 +137,12 @@ end
 function [y] = idwt2(x)
     l = size(x);
     sz = l;
-    for i=1:l(1)
+    parfor i=1:l(1)
         row = 1:l(1);
         x(:,i) = idwt(x(:,i));
     end
 
-    for i=1:l(2)
+    parfor i=1:l(2)
         row = l(2);
         x(i,:) = idwt(x(i,:));
     end

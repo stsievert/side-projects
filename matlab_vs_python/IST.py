@@ -23,11 +23,11 @@
 # What IST actually does:
 #   The equation for IST is 
 
-
-
 from pylab import *
 import pywt
 import random
+
+
 
 # THIS CODE WORKS. DON"T CHANGE ANY OF THE (I)DWT FUNCTIONS
 
@@ -148,8 +148,10 @@ def IST():
         xold = temp4;
 
         j = abs(xold) < l
+        #j = where(abs(xold) < l)
         xold[j] = 0
         j = abs(xold) > l
+        #j = where(abs(xold) > l)
         xold[j] = xold[j] - sign(xold[j])*l
       
         
@@ -212,16 +214,35 @@ def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
 
     return xold, ys
 
-#I = imread('./lenna.jpg')
-#I = mean(I, axis=2); 
-#i = 10
-#x = arange(16).reshape(4,4)
-#i = arange(x.shape[0])
-#x, y = ISTreal(I, cut=i, its=100)
 
-#I = idwt2_full(x)
-#figure()
-#axis('off')
-#imshow(I, cmap='gray')
-#savefig('lenna-l=%d.png' % i)
-#show()
+
+
+
+
+
+from scipy.misc import lena
+#from numpy.random import random
+seed(42)
+
+x = lena()
+
+xx = x + np.random.random(x.shape) * 255 / 10
+xx, ys = ISTreal(xx, p=1.0)
+xx = idwt2_full(xx)
+
+
+a = np.random.random(x.shape) * 255 / 10
+error = abs(xx - x)
+
+print mean(a)
+print mean(error)
+
+imshow(error)
+show()
+
+subplot(121)
+imshow(ys, cmap='gray')
+subplot(122)
+imshow(xx, cmap='gray')
+savefig('stackexchange.png', dpi=300)
+show()
