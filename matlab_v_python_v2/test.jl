@@ -38,14 +38,24 @@ function euler()
     #i = findnz(A+B+C - 1000)
 end
 
-forLoopTime();
-vecForTime();
-svdTime();
-cumSumTime();
+function S2euler_7()
+    N = 1000000;
+    n = trues(N);
+    for p=2:1:sqrt(N)
+        p = int32(p);
+        i = ((1:N/p)+2)*p;
+        i = i[i.<N]
+        n[i] = false;
+    end
 
-tic(); forLoopTime(); toc();
-tic(); vecForTime(); toc();
-tic(); svdTime(); toc();
-tic(); cumSumTime(); toc();
+    number = 1:N;
+    primes = number[n];
+    return primes[10001+2]
+end
 
-tic(); euler(); toc();
+tic() ; forLoopTime() ; toc() ;
+tic() ; vecForTime()  ; toc() ;
+tic() ; svdTime()     ; toc() ;
+tic() ; cumSumTime()  ; toc() ;
+tic() ; euler()       ; toc() ;
+tic() ; S2euler_7()     ; toc() ;

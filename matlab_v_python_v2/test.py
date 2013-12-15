@@ -32,6 +32,18 @@ def euler():
     ans = A[i[0], i[1]] * B[i[0], i[1]] * C[i[0], i[1]]
     return ans
 
+def p7():
+    N = int(1e6)
+    # corresponding to 0,1,2,3....
+    n = ones(N, dtype=bool)
+    for p in arange(sqrt(N))+2:
+        p = int(p)
+        i = (arange(N/p)+2)*p
+        n[i[where(i<N)]] = 0
+
+    number = arange(N)
+    primes = number[n]
+    return primes[10001+1]
 def time_python():
     start = time()
     plainFor()
@@ -53,7 +65,17 @@ def time_python():
     cumSumTime()
     end = time()
     cumSumT = end - start
-    return forLoopT, vecForT, svdT, cumSumT
+
+    start = time()
+    euler()
+    end = time()
+    eulerT = end - start
+
+    start = time()
+    p7()
+    end = time()
+    euler_7T = end - start
+    return forLoopT, vecForT, svdT, cumSumT, eulerT, euler_7T
 
 def plot_bar(numpy, julia, r, matlab):
     numpy_for    = numpy[0];
@@ -111,4 +133,19 @@ def plot_bar(numpy, julia, r, matlab):
     title('Cumulative Sum')
     ylabel('Time')
     show()
+
+
+# find the 10,001st prime
+# make a sieve first
+
+
+
+
+
+
+
+
+
+
+
 

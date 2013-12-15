@@ -42,3 +42,18 @@ i = find(A+B+C == 1000);
 ans = A(i(1))*B(i(1))*C(i(1));
 euler_time = toc;
 display(euler_time)
+
+
+tic;
+N = 1e6;
+n = ones(1,N);%, dtype=bool)
+
+for p=2:1:sqrt(N),
+    i = (2:N/p)*p;
+    n(i) = 0;
+end
+
+number = 1:N;
+primes = number(~~n);
+euler7 = toc;
+display(euler7)
