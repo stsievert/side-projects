@@ -65,3 +65,10 @@ y = cumprod(x);
 fib = toc;
 display(fib)
 
+tic;
+N = 1e7;
+n = 1:N;
+i = find(~~mod(n,3)==0 | ~~mod(n,5)==0);
+an = sum(n(i));
+euler1 = toc;
+display(euler1)

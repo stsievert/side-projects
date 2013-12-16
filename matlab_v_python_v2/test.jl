@@ -59,6 +59,16 @@ function fibonannci()
         x = i*x;
     end
 end
+function euler1()
+    N = 1e7;
+    s = 0;
+    for i=1:N
+        if mod(i,3)==0 | mod(i,5)==0
+            s += i;
+        end
+    end
+end
+
 
 tic() ; forLoopTime() ; toc() ;
 tic() ; vecForTime()  ; toc() ;
@@ -67,5 +77,6 @@ tic() ; cumSumTime()  ; toc() ;
 tic() ; euler()       ; toc() ;
 tic() ; S2euler_7()   ; toc() ;
 tic() ; fibonannci()  ; toc() ;
+tic() ; euler1()      ; toc() ;
 
 

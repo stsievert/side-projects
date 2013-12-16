@@ -49,6 +49,10 @@ def fib():
     x = arange(N)+1
     y = cumprod(x)
     return y[-1]
+def euler1():
+    n = arange(1,1e7)
+    i = argwhere((n%3==0) | (n%5==0))
+    return sum(n[i])
 def time_python():
     start = time()
     plainFor()
@@ -85,7 +89,12 @@ def time_python():
     fib()
     end = time()
     euler_fib = end - start
-    return forLoopT, vecForT, svdT, cumSumT, eulerT, euler_7T, euler_fib
+
+    start = time()
+    fib()
+    end = time()
+    euler1 = end - start
+    return forLoopT, vecForT, svdT, cumSumT, eulerT, euler_7T, euler_fib, euler1
 
 def plot_bar(numpy, julia, r, matlab):
     numpy_for    = numpy[0];
@@ -143,6 +152,48 @@ def plot_bar(numpy, julia, r, matlab):
     title('Cumulative Sum')
     ylabel('Time')
     show()
+
+def plot_bar2(matlab_euler, numpy_euler, julia_euler, \
+          matlab_euler7, numpy_euler7, julia_euler7, \
+          matlab_fib, numpy_fib, julia_fib, \
+          matlab_euler1, numpy_euler1, julia_euler1):
+    figure(figsize=(10,10))
+    subplot(221)
+    bar(0, matlab_euler, color='yellow', label='Matlab')
+    bar(1, numpy_euler, color='blue', label='NumPy')
+    bar(2, julia_euler, color='red', label='Julia')
+    legend(loc='lower right')
+    title('Project Euler \#9')
+    ylabel('Time (s)')
+
+    subplot(222)
+    bar(0, matlab_euler7, color='yellow', label='Matlab')
+    bar(1, numpy_euler7,  color='blue', label='NumPy')
+    bar(2, julia_euler7,  color='red', label='Julia')
+    legend(loc='lower right')
+    title('Project Euler \#7')
+    ylabel('Time (s)')
+
+    subplot(223)
+    bar(0, matlab_fib, color='yellow', label='Matlab', bottom=1e-5)
+    bar(1, numpy_fib,  color='blue', label='NumPy', bottom=1e-5)
+    bar(2, julia_fib,  color='red', label='Julia', bottom=1e-5)
+    yscale('log')
+    legend(loc='best')
+    title('Fibonacci(60)')
+    ylabel('Time (s)')
+
+    subplot(224)
+    bar(0, matlab_euler1, color='yellow', label='Matlab', bottom=1e-5)
+    bar(1, numpy_euler1,  color='blue', label='NumPy', bottom=1e-5)
+    bar(2, julia_euler1,  color='red', label='Julia', bottom=1e-5)
+    yscale('log')
+    legend(loc='best')
+    title('Project Euler \# 1')
+    ylabel('Time (s)')
+    show()
+    
+
 
 
 
