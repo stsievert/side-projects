@@ -52,10 +52,20 @@ function S2euler_7()
     primes = number[n];
     return primes[10001+2]
 end
+function fibonannci()
+    N = 60;
+    x = 1;
+    for i=1:N
+        x = i*x;
+    end
+end
 
 tic() ; forLoopTime() ; toc() ;
 tic() ; vecForTime()  ; toc() ;
 tic() ; svdTime()     ; toc() ;
 tic() ; cumSumTime()  ; toc() ;
 tic() ; euler()       ; toc() ;
-tic() ; S2euler_7()     ; toc() ;
+tic() ; S2euler_7()   ; toc() ;
+tic() ; fibonannci()  ; toc() ;
+
+

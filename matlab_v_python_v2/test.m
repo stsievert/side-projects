@@ -57,3 +57,11 @@ number = 1:N;
 primes = number(~~n);
 euler7 = toc;
 display(euler7)
+
+tic;
+N = 60;
+x = 1:N;
+y = cumprod(x);
+fib = toc;
+display(fib)
+

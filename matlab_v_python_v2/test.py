@@ -44,6 +44,11 @@ def p7():
     number = arange(N)
     primes = number[n]
     return primes[10001+1]
+def fib():
+    N = 60
+    x = arange(N)+1
+    y = cumprod(x)
+    return y[-1]
 def time_python():
     start = time()
     plainFor()
@@ -75,7 +80,12 @@ def time_python():
     p7()
     end = time()
     euler_7T = end - start
-    return forLoopT, vecForT, svdT, cumSumT, eulerT, euler_7T
+
+    start = time()
+    fib()
+    end = time()
+    euler_fib = end - start
+    return forLoopT, vecForT, svdT, cumSumT, eulerT, euler_7T, euler_fib
 
 def plot_bar(numpy, julia, r, matlab):
     numpy_for    = numpy[0];
@@ -133,18 +143,6 @@ def plot_bar(numpy, julia, r, matlab):
     title('Cumulative Sum')
     ylabel('Time')
     show()
-
-
-# find the 10,001st prime
-# make a sieve first
-
-
-
-
-
-
-
-
 
 
 
