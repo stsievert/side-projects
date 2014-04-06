@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import division
 import math
 
 from numba import autojit, jit
@@ -1104,19 +1103,32 @@ def p34():
     return sum(z)
 
 
+def p44():
+    n = arange(8)+0
+    p = n * (3*n - 1) / 2
+
+    P1, P2 = meshgrid(p, p)
+    su = P1 + P2
+    diff = abs(P1 - P2)
+
+    # finding where the sums and diffs are also pentagonal
+    i = su == p[:, newaxis, newaxis]
+
+    #j = zeros_like(i[:,:,0])
+    #for ii in arange(i.shape[-1]): j = j | i[:,:,ii]
+
+
+
 #def p44():
-n = arange(8)+0
-p = n * (3*n - 1) / 2
 
-P1, P2 = meshgrid(p, p)
-su = P1 + P2
-diff = abs(P1 - P2)
+def pentagonal(n):
+    return n*(3*n-1)/2
 
-# finding where the sums and diffs are also pentagonal
-i = su == p[:, newaxis, newaxis]
 
-#j = zeros_like(i[:,:,0])
-#for ii in arange(i.shape[-1]): j = j | i[:,:,ii]
+from scipy.optimize import fmin_cobyla
+x = fmin_cobyla()
+
+
 
 
 

@@ -217,32 +217,30 @@ def ISTreal(I, its=100, p=0.5, cut=6, draw=False):
 
 
 
+def IST():
+    from scipy.misc import lena
+    #from numpy.random import random
+    seed(42)
+
+    x = lena()
+
+    xx = x + np.random.random(x.shape) * 255 / 10
+    xx, ys = ISTreal(xx, p=1.0)
+    xx = idwt2_full(xx)
 
 
+    a = np.random.random(x.shape) * 255 / 10
+    error = abs(xx - x)
 
-from scipy.misc import lena
-#from numpy.random import random
-seed(42)
+    print mean(a)
+    print mean(error)
 
-x = lena()
+    imshow(error)
+    show()
 
-xx = x + np.random.random(x.shape) * 255 / 10
-xx, ys = ISTreal(xx, p=1.0)
-xx = idwt2_full(xx)
-
-
-a = np.random.random(x.shape) * 255 / 10
-error = abs(xx - x)
-
-print mean(a)
-print mean(error)
-
-imshow(error)
-show()
-
-subplot(121)
-imshow(ys, cmap='gray')
-subplot(122)
-imshow(xx, cmap='gray')
-savefig('stackexchange.png', dpi=300)
-show()
+    subplot(121)
+    imshow(ys, cmap='gray')
+    subplot(122)
+    imshow(xx, cmap='gray')
+    savefig('stackexchange.png', dpi=300)
+    show()
