@@ -1,13 +1,22 @@
 from __future__ import division
 from pylab import *
 from scipy.io import loadmat
+import vimpdb as pdb
 
 def find_rho(x, y):
     rho = cov(x, y) / (std(x) * std(y))
     return rho[0,1]
 def runningMeanFast(x, N):
+    # running means
     y = np.convolve(x, np.ones((N,))/N)[(N-1):]
     y = y[:len(y)-N]
+
+    # discrete means
+    y = zeros(10*len(x)/N) * nan
+    for i in arange(0, x.shape[0]/N):
+        y[i] = mean(x[i*N:i*N+N])
+    y = y[~isnan(y)]
+
     return y
 
 # load the data
@@ -27,7 +36,7 @@ mean_rho = []
 weight_unavg = weight.copy()
 
 # find it over a range of averages
-for MEAN_N in arange(1,14):
+for MEAN_N in arange(1,60):
     # averaging weight and food based on MEAN_N
     weight = runningMeanFast(weight_unavg, MEAN_N)
 
@@ -48,15 +57,8 @@ for MEAN_N in arange(1,14):
     mean_rho += [mean(correlation)]
 
 figure()
-plot(weight)
-plot(weight_unavg)
-show()
-
-figure()
-plot(food[0])
-plot(food_unavg[0])
-show()
-
-figure()
 plot(days_avg, mean_rho, marker='o')
+ylabel('Correlation coeff')
+xlabel('Days averaged')
+savefig('food_and_weight.png', dpi=300)
 show()
