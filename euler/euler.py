@@ -8,6 +8,7 @@ import numpy as np
 from PIL import Image
 from pylab import *
 import time
+from drawnow import drawnow, drawnow_init
 
 def factorial(n):
     if n==1:# or n==0:
@@ -1119,17 +1120,74 @@ def p44():
 
 
 
-#def p44():
+#def p64():
+# subtract off the integer part = x
+# take 1/x and go to 1.
+from sympy import S, sqrt, floor
+#x = S(sqrt(6))
 
-def pentagonal(n):
-    return n*(3*n-1)/2
+x = 43
+def find_period_sqrt(x, ITS_MAX=20):
+    #x = S(sqrt(x))
+    x = np.sqrt(x)
+
+    seq = array([], dtype=float64)
+    for its in arange(ITS_MAX):
+        # subtract the integer part
+        y = x - floor(x)
+
+        # put that into an array
+        seq = hstack(( seq, floor(x).n() ))
+
+        # take the inverse
+        x = 1/y
+
+    # boom, we have the sequence
+    seq = seq[1:]
+    l = len(seq)
+
+    # find out how periodic it is
+    for i in arange(0,10):
+        # repeat some sequence
+        tiled_array = tile(seq[:i-1], 10*l//i)
+        # make it the right len
+        tiled_array = tiled_array[:l]
+        # see if they're equal
+        if array_equal(tiled_array, seq):
+            length = len(seq[:i-1])
+            #print length
+            #break
+            return length
+    #print -1
+    return -1
+#x = 42
+#print find_period_sqrt(x)
+N_MAX = 1e3
+i = arange(1,N_MAX)
+i = pow(i, 2)
+j = arange(1, N_MAX, dtype=int)
+
+for jj in j:
+    if jj in i:
+        j = j[j != jj]
+
+def fig_show():
+    figure()
+    plot(periods)
+    #show()
+periods = []
+drawnow_init()
+for i in j:
+    if i%(N_MAX//10) == 0: print i
+    sys.stdout.flush()
+    periods += [ find_period_sqrt(i) ]
+    drawnow(fig_show, wait_secs=1)
+
+periods = asarray(periods)
 
 
-from scipy.optimize import fmin_cobyla
-x = fmin_cobyla()
-
-
-
+#def p65():
+#same thing as p64()
 
 
 
