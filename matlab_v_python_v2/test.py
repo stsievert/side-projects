@@ -151,6 +151,8 @@ def plot_bar(numpy, julia, r, matlab):
     legend(loc='best')
     title('Cumulative Sum')
     ylabel('Time')
+
+    savefig('speed_1.png', dpi=300)
     show()
 
 def plot_bar2(matlab_euler, numpy_euler, julia_euler, \
