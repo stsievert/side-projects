@@ -20,7 +20,7 @@ h = fftshift(h)
 x = exp(1j*2*pi*rand(N,N)) # a bunch of random phases
 x *= p # only within the pupil
 
-d = N/2 # delta since our eyes aren't infinitely big
+d = N/10 # delta since our eyes aren't infinitely big
 y = convolve2d(x, h[N/2-d:N/2+d, N/2-d:N/2+d])
 
 figure()
